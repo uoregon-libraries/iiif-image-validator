@@ -61,7 +61,9 @@ kill %1
 ```
 
 (The PNG is encoded on the fly; the JP2 is a byte-for-byte copy of the official
-file, since Go cannot encode JP2s without external dependencies.)
+file, since Go cannot encode JP2s without external dependencies. You can in
+fact just copy the JP2 directly without the mock server; it lives in this repo
+under `./validator/iiiftest/reference.jp2`)
 
 Put it wherever your server reads images from (you can rename it; the
 identifier just has to reach it), then run the validator against that

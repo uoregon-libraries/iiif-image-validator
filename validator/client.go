@@ -95,6 +95,10 @@ func (c *Client) fetch(url string, extra map[string]string) ([]byte, error) {
 	for k, v := range extra {
 		req.Header.Set(k, v)
 	}
+	// Record the URL before the request so it is reported even when the
+	// request fails at the transport level (connection refused, timeout, ...).
+	c.LastURL = url
+	c.URLs = append(c.URLs, url)
 	resp, err := c.HTTP.Do(req)
 	if err != nil {
 		return nil, err
@@ -106,8 +110,6 @@ func (c *Client) fetch(url string, extra map[string]string) ([]byte, error) {
 	}
 	c.LastHeaders = resp.Header
 	c.LastStatus = resp.StatusCode
-	c.LastURL = url
-	c.URLs = append(c.URLs, url)
 	return data, nil
 }
 

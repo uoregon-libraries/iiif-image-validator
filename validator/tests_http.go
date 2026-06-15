@@ -112,6 +112,10 @@ func init() {
 			if err != nil {
 				return r.fail("url-check", err.Error(), 301, "Failed to redirect from url: "+url+".")
 			}
+			// Record the URL before the request so it is reported even on a
+			// transport-level failure.
+			r.Client.LastURL = url
+			r.Client.URLs = append(r.Client.URLs, url)
 			resp, err := r.Client.HTTP.Do(req)
 			if err != nil {
 				return r.fail("url-check", err.Error(), 301, "Failed to redirect from url: "+url+".")
@@ -119,8 +123,6 @@ func init() {
 			defer resp.Body.Close()
 			r.Client.LastStatus = resp.StatusCode
 			r.Client.LastHeaders = resp.Header
-			r.Client.LastURL = url
-			r.Client.URLs = append(r.Client.URLs, url)
 			newurl := resp.Request.URL.String()
 			if loc := resp.Header.Get("Location"); resp.StatusCode >= 300 && resp.StatusCode < 400 && loc != "" {
 				newurl = loc
